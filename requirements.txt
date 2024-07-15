@@ -1,4 +1,4 @@
-streamilt
+streamlit
 plotly
 matplotlib
 pandas
