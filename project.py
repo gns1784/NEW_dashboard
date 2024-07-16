@@ -1,21 +1,9 @@
 import streamlit as st
 import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-
-# Title of the dashboard
-st.title('mini-project Streamlit Dashboard')
-
-titanic = pd.read_csv("./data/titanic.csv")
-st.write(titanic)
-
-import streamlit as st
-import pandas as pd
-import matplotlib.pyplot as plt
+import plotly.express as px
 
 # 데이터 로드
 titanic = pd.read_csv("./data/titanic.csv")
-st.write(titanic)
 
 # 사이드바 설정
 st.sidebar.header('User Input Parameters')
@@ -30,12 +18,25 @@ else:
 
 filtered_data = filtered_data[(filtered_data['Age'] >= age_bins[0]) & (filtered_data['Age'] <= age_bins[1])]
 
-# 데이터 시각화
-st.header(f'Titanic Data - {sex.capitalize()} Passengers Aged {age_bins[0]} to {age_bins[1]}')
+# 본문에 글 쓰기
+st.write("# Titanic Dataset Analysis")
+st.write("""
+This analysis allows you to filter the Titanic dataset by gender and age range, 
+and visualize the age distribution of the selected group of passengers.
+Use the sidebar to select the gender and age range you are interested in.
+""")
 
-fig, ax = plt.subplots()
-ax.hist(filtered_data['Age'], bins=10, edgecolor='black')
-ax.set_title('Age Distribution')
-ax.set_xlabel('Age')
-ax.set_ylabel('Number of Passengers')
-st.pyplot(fig)
+# 데이터 표시
+st.write("### Filtered Titanic Data")
+st.write(filtered_data)
+
+# 데이터 시각화
+st.write(f"### Age Distribution for {sex.capitalize()} Passengers Aged {age_bins[0]} to {age_bins[1]}")
+
+# Plotly를 사용한 히스토그램 생성
+fig = px.histogram(filtered_data, x='Age', nbins=10, title='Age Distribution',
+                   labels={'Age': 'Age'}, template='plotly_white')
+fig.update_layout(yaxis_title='Number of Passengers', xaxis_title='Age')
+
+# Plotly 그래프를 Streamlit에 표시
+st.plotly_chart(fig)
