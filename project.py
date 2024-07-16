@@ -33,10 +33,14 @@ st.write(filtered_data)
 # 데이터 시각화
 st.write(f"### Age Distribution for {sex.capitalize()} Passengers Aged {age_bins[0]} to {age_bins[1]}")
 
-# Plotly를 사용한 히스토그램 생성
-fig = px.histogram(filtered_data, x='Age', nbins=10, title='Age Distribution',
-                   labels={'Age': 'Age'}, template='plotly_white')
-fig.update_layout(yaxis_title='Number of Passengers', xaxis_title='Age')
+# 연령대를 구간으로 나누기
+age_groups = pd.cut(filtered_data['Age'], bins=[0, 10, 20, 30, 40, 50, 60, 70, 80])
+age_distribution = filtered_data.groupby(age_groups).size().reset_index(name='Count')
+
+# Plotly를 사용한 바 그래프 생성
+fig = px.bar(age_distribution, x='Age', y='Count', title='Age Distribution',
+             labels={'Age': 'Age Group', 'Count': 'Number of Passengers'}, template='plotly_white')
+fig.update_layout(yaxis_title='Number of Passengers', xaxis_title='Age Group')
 
 # Plotly 그래프를 Streamlit에 표시
 st.plotly_chart(fig)
